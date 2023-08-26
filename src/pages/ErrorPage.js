@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useRouteError } from "react-router-dom";
 
 const ErrorPage = () => {
+  const error = useRouteError();
+
   return (
       <Wrapper className="page-100">
         <section>
-          <h1>404</h1>
-          <h3>Sorry, the page you tried cannot be found</h3>
+          <h1>{error?.response?.status || "404"}</h1>
+          <h3>{error?.response?.data || "Sorry, the page you tried cannot be found"}</h3>
           <Link className="btn" to="/">back home</Link>
         </section>
       </Wrapper>

@@ -1,8 +1,13 @@
-import React, { useEffect } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
-import { useProductsContext } from '../context/products_context'
-import { single_product_url as url } from '../utils/constants'
-import { formatPrice } from '../utils/helpers'
+import React, { useEffect } from "react";
+import {
+  useParams,
+  useHistory,
+  useLoaderData,
+  useNavigation,
+} from "react-router-dom";
+import { useProductsContext } from "../context/products_context";
+import { single_product_url as url } from "../utils/constants";
+import { formatPrice } from "../utils/helpers";
 import {
   Loading,
   Error,
@@ -10,13 +15,83 @@ import {
   AddToCart,
   Stars,
   PageHero,
-} from '../components'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+} from "../components";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+const singleProductQuery = (id) => {
+  return {
+    queryKey: ["singleProduct", id],
+    queryFn: async () => {
+      const { data } = await axios.get(
+        `https://course-api.com/react-store-single-product?id=${id}`
+      );
+      return data;
+    },
+  };
+};
+
+export const loader =
+  (queryClient) =>
+  async ({ params }) => {
+    const id = params.id;
+    // ! This is asynchronous so we need to await it. Returns the same query
+    await queryClient.ensureQueryData(singleProductQuery(id));
+    return { id };
+  };
 
 const SingleProductPage = () => {
-  return <h4>single product page</h4>
-}
+  const { id } = useLoaderData();
+  const { data: product } = useQuery(singleProductQuery(id));
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
+  const {
+    name,
+    price,
+    description,
+    stock,
+    stars,
+    reviews,
+    id: sku,
+    company,
+    images,
+  } = product;
+
+  return <Wrapper>
+    <PageHero title={name} product />
+    <div className="section section-center page">
+      <Link to="/products" className="btn">
+        back to products
+      </Link>
+      <div className="product-center">
+        <ProductImages images={images}/>
+        <section className="content">
+          <h2>{name}</h2>
+          <Stars stars={stars} reviews={reviews}/>
+          <h5 className="price">{formatPrice(price)}</h5>
+          <p className="desc">{description}</p>
+          <p className="info">
+            <span>Available : </span>
+            {stock > 0 ? "In stock" : "Out of stock"}
+          </p>
+          <p className="info">
+            <span>SKU : </span>
+            {sku}
+          </p>
+          <p className="info">
+            <span>Brand : </span>
+            {company}
+          </p>
+          <hr />
+          {stock > 0 && <AddToCart product={product}/>}
+        </section>
+      </div>
+    </div>
+  </Wrapper>;
+};
 
 const Wrapper = styled.main`
   .product-center {
@@ -50,6 +125,6 @@ const Wrapper = styled.main`
       font-size: 1.25rem;
     }
   }
-`
+`;
 
-export default SingleProductPage
+export default SingleProductPage;
