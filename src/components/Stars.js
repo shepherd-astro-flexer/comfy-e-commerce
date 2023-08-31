@@ -17,8 +17,6 @@ const Stars = ({ stars, reviews }) => {
     );
   });
 
-  console.log(starsArray);
-
   return (
     <Wrapper>
       <div className="stars">{starsArray}</div>

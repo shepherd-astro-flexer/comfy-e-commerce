@@ -5,11 +5,21 @@ import styled from "styled-components";
 import Error from "./Error";
 import Loading from "./Loading";
 import Product from "./Product";
+import { useProductsContext } from "../context/products_context";
 
 const FeaturedProducts = ({ products }) => {
+  const {products_loading: loading, products_error: error} = useProductsContext()
   const featuredProducts = products
     .filter((product) => product.featured === true)
     .slice(0, 3);
+
+  if (loading) {
+    return <Loading/>
+  }
+
+  if (error) {
+    return <Error/>
+  }
 
   return (
     <Wrapper className="section">

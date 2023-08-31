@@ -12,10 +12,11 @@ import {
   Products,
   SingleProduct,
 } from "./pages";
-import { loader as singleProductLoader } from "./pages/SingleProductPage";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { loader as homeLoader } from "./pages/HomePage";
+import { FilterProvider } from "./context/filter_context";
+import { ProductsProvider } from "./context/products_context";
+import { loader as singleProductLoader } from "./pages/SingleProductPage";
 // * we passed in an optional object that will determine how much time do we want the data to stay on the cache
 // * the value of stale time should be in milliseconds. We can do the calculations that will provide us the desired value
 const queryClient = new QueryClient({
@@ -30,11 +31,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
+
     children: [
       {
         index: true,
         element: <Home />,
-        loader: homeLoader(queryClient)
       },
       {
         path: "about",
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
         path: "products/:id",
         element: <SingleProduct />,
         loader: singleProductLoader(queryClient),
-        errorElement: <Error/>
+        errorElement: <Error />,
       },
       {
         path: "cart",
@@ -65,8 +66,12 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools/>
+      <ProductsProvider>
+        <FilterProvider>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools />
+        </FilterProvider>
+      </ProductsProvider>
     </QueryClientProvider>
   );
 }
