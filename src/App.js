@@ -17,6 +17,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { FilterProvider } from "./context/filter_context";
 import { ProductsProvider } from "./context/products_context";
 import { loader as singleProductLoader } from "./pages/SingleProductPage";
+import { CartProvider } from "./context/cart_context";
 // * we passed in an optional object that will determine how much time do we want the data to stay on the cache
 // * the value of stale time should be in milliseconds. We can do the calculations that will provide us the desired value
 const queryClient = new QueryClient({
@@ -68,8 +69,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ProductsProvider>
         <FilterProvider>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools />
+          <CartProvider>
+            <RouterProvider router={router} />
+            <ReactQueryDevtools />
+          </CartProvider>
         </FilterProvider>
       </ProductsProvider>
     </QueryClientProvider>
