@@ -6,13 +6,18 @@ import {
   TOGGLE_CART_ITEM_AMOUNT,
 } from '../actions'
 
+// const parseData = (value) => {
+//   localStorage.setItem("cart", JSON.stringify(value))
+// }
+
 const cart_reducer = (state, action) => {
   if (action.type === ADD_TO_CART) {
-    const {id, amount, product, mainColor} = action.payload
+    const {id, amount, product, mainColor, color} = action.payload
     const newCartItem = {
       // ! change to only get the values that we will need when we render the cart item
       name: product.name,
       id: id + mainColor,
+      color,
       amount,
       image: product.images[0].url,
       price: product.price,
@@ -29,10 +34,61 @@ const cart_reducer = (state, action) => {
       // * we filter the same product so we don't add multiple products of the same id
       const cartCopy = state.cart.map(item => item.id === findItem.id ? {...item, amount: amountItem} : item)
       // * if amount + findItem.amoung is greater than the stock, just return the STOCK, else return the sum of amount and findItem.amount
+      // parseData(cartCopy)
       return {...state, cart: cartCopy}
     }
-    
+
+    // parseData([...state.cart, newCartItem])
+
     return {...state, cart: [...state.cart, newCartItem]}
+  }
+
+  if (action.type === REMOVE_CART_ITEM) {
+    const getItem = JSON.parse(localStorage.getItem("cart"))
+    const newCart = getItem.filter(item => item.id !== action.payload);
+    return {...state, cart: newCart}
+  }
+
+  if (action.type === TOGGLE_CART_ITEM_AMOUNT) {
+    const getItem = JSON.parse(localStorage.getItem("cart"))
+    
+    const newCart = getItem.map(item => {
+      if (item.id === action.payload.id) {
+        let newAmount;
+        if (action.payload.value === "add") {
+          newAmount = item.amount + 1 > item.max ? item.max : item.amount + 1
+          return {...item, amount: newAmount}
+        }
+
+        newAmount = item.amount - 1 < 1 ? item.amount : item.amount - 1
+        return {...item, amount: newAmount}
+      }
+    
+      return item;
+    })
+
+    if (action.type === CLEAR_CART) {
+      // localStorage.setItem("cart", JSON.stringify([]))
+
+      return {...state, cart: []}
+    }
+
+    // localStorage.setItem("cart", JSON.stringify(newCart))
+    return {...state, cart: newCart}
+  }
+  // total_items: 0,
+  // total_amount: 0,
+  if (action.type === COUNT_CART_TOTALS) {
+    const cartCopy = [...state.cart]
+    const cartReduce = cartCopy.reduce((accu, currCartItem) => {
+      const {amount, price} = currCartItem;
+      accu.total_items += amount
+      accu.total_amount += price
+      return accu
+    }, {total_items: 0, total_amount: 0})
+
+    const {total_items, total_amount} = cartReduce;
+    return {...state, total_items, total_amount};
   }
 
   throw new Error(`No Matching "${action.type}" - action type`)
