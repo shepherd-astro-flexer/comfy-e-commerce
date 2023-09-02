@@ -40,6 +40,7 @@ export const CartProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    // * We set the value of localStorage equals to the value of the cart everytime we update the value inside of the cart
     localStorage.setItem("cart", JSON.stringify(state.cart))
   }, [state.cart])
   // count cart items

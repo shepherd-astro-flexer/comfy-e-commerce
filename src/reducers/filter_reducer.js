@@ -102,7 +102,6 @@ const filter_reducer = (state, action) => {
     // name
     .filter(product => product.name.startsWith(text))
 
-    console.log(filtered_products);
     return {...state, filtered_products};
   }
 
