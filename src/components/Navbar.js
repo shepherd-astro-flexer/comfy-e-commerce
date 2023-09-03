@@ -10,6 +10,7 @@ import { useUserContext } from "../context/user_context";
 
 const Nav = () => {
   const {openSidebar} = useProductsContext()
+  const {logout, loginWithRedirect} = useUserContext()
 
   return (
     <NavContainer>

@@ -19,6 +19,7 @@ import { ProductsProvider } from "./context/products_context";
 import { loader as singleProductLoader } from "./pages/SingleProductPage";
 import { CartProvider } from "./context/cart_context";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { UserProvider } from "./context/user_context";
 // * we passed in an optional object that will determine how much time do we want the data to stay on the cache
 // * the value of stale time should be in milliseconds. We can do the calculations that will provide us the desired value
 const queryClient = new QueryClient({
@@ -68,23 +69,25 @@ const router = createBrowserRouter([
 function App() {
   return (
     <Auth0Provider
-    domain="dev-rrhk56w6pey8yvjl.us.auth0.com"
-    clientId="BnGz5usj5hGZggA46m0teTIw38x5QahB"
-    authorizationParams={{
-      redirect_uri: window.location.origin
-    }}
-  ><QueryClientProvider client={queryClient}>
-      <ProductsProvider>
-        <FilterProvider>
-          <CartProvider>
-            <RouterProvider router={router} />
-            <ReactQueryDevtools />
-          </CartProvider>
-        </FilterProvider>
-      </ProductsProvider>
-    </QueryClientProvider>
-  </Auth0Provider>
-    
+      domain="dev-rrhk56w6pey8yvjl.us.auth0.com"
+      clientId="BnGz5usj5hGZggA46m0teTIw38x5QahB"
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+      }}
+    >
+      <UserProvider>
+        <QueryClientProvider client={queryClient}>
+          <ProductsProvider>
+            <FilterProvider>
+              <CartProvider>
+                <RouterProvider router={router} />
+                <ReactQueryDevtools />
+              </CartProvider>
+            </FilterProvider>
+          </ProductsProvider>
+        </QueryClientProvider>
+      </UserProvider>
+    </Auth0Provider>
   );
 }
 
