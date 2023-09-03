@@ -46,9 +46,7 @@ const cart_reducer = (state, action) => {
   }
 
   if (action.type === TOGGLE_CART_ITEM_AMOUNT) {
-    const getItem = state.cart;
-    
-    const newCart = getItem.map(item => {
+    const newCart = state.cart.map(item => {
       if (item.id === action.payload.id) {
         console.log((action.payload.value));
         let newAmount;
@@ -72,15 +70,14 @@ const cart_reducer = (state, action) => {
   }
 
   if (action.type === COUNT_CART_TOTALS) {
-    const cartCopy = [...state.cart]
-    const cartReduce = cartCopy.reduce((accu, currCartItem) => {
+    // const cartCopy = [...state.cart]
+    const {total_items, total_amount} = state.cart.reduce((accu, currCartItem) => {
       const {amount, price} = currCartItem;
       accu.total_items += amount
       accu.total_amount += price * amount
       return accu
     }, {total_items: 0, total_amount: 0})
 
-    const {total_items, total_amount} = cartReduce;
     return {...state, total_items, total_amount};
   }
 

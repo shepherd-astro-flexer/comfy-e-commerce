@@ -38,15 +38,14 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {
     dispatch({type: CLEAR_CART})
   }
-
+  // count cart items
+  // update localStorage
   useEffect(() => {
     // * We set the value of localStorage equals to the value of the cart everytime we update the value inside of the cart
+    dispatch({type: COUNT_CART_TOTALS})
     localStorage.setItem("cart", JSON.stringify(state.cart))
   }, [state.cart])
-  // count cart items
-  useEffect(() => {
-    dispatch({type: COUNT_CART_TOTALS})
-  }, [state.cart])
+
 
   return (
     <CartContext.Provider value={{...state, addToCart, removeItem, toggleAmount, clearCart}}>{children}</CartContext.Provider>
