@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import {
   HomeLayout,
@@ -34,7 +34,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
-
     children: [
       {
         index: true,
@@ -64,7 +63,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/checkout",
-        element: <Checkout />,
+        element: (
+          <PrivateRoute>
+            <Checkout />
+          </PrivateRoute>
+        ),
+        errorElement: <Error />,
       },
     ],
   },
@@ -72,26 +76,28 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Auth0Provider
-      domain="dev-rrhk56w6pey8yvjl.us.auth0.com"
-      clientId="BnGz5usj5hGZggA46m0teTIw38x5QahB"
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-      }}
-    >
-      <UserProvider>
-        <QueryClientProvider client={queryClient}>
-          <ProductsProvider>
-            <FilterProvider>
-              <CartProvider>
-                <RouterProvider router={router} />
-                <ReactQueryDevtools />
-              </CartProvider>
-            </FilterProvider>
-          </ProductsProvider>
-        </QueryClientProvider>
-      </UserProvider>
-    </Auth0Provider>
+    <AuthWrapper>
+      <Auth0Provider
+        domain="dev-rrhk56w6pey8yvjl.us.auth0.com"
+        clientId="BnGz5usj5hGZggA46m0teTIw38x5QahB"
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+        }}
+      >
+        <UserProvider>
+          <QueryClientProvider client={queryClient}>
+            <ProductsProvider>
+              <FilterProvider>
+                <CartProvider>
+                  <RouterProvider router={router} />
+                  <ReactQueryDevtools />
+                </CartProvider>
+              </FilterProvider>
+            </ProductsProvider>
+          </QueryClientProvider>
+        </UserProvider>
+      </Auth0Provider>
+    </AuthWrapper>
   );
 }
 

@@ -24,7 +24,7 @@ const CartButtons = () => {
     {myUser ? <button type="button" className='auth-btn' onClick={() => logout({
       returnTo: window.location.origin
     })}>
-      Logout <FaUserPlus/>
+      Logout <FaUserMinus/>
     </button> : <button type="button" className='auth-btn' onClick={loginWithRedirect}>
       Login <FaUserPlus/>
     </button>}
