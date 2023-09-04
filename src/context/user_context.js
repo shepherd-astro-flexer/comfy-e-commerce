@@ -9,10 +9,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     // We run this effect each rerender and every time the value of isAuthenticated changes
-    console.log(`user: ${user}`);
-    console.log(`isAuthenticated: ${isAuthenticated}`);
-    console.log(`isLoading: ${isLoading}`);
-    setMyUser(user)
+    setMyUser(isAuthenticated ? user : null)
   }, [isAuthenticated])
 
   return (
